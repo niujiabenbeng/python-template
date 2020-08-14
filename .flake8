@@ -1,0 +1,13 @@
+[flake8]
+ignore =
+    F401,  # imported but unused
+    E221,  # multiple spaces before operator
+    E241,  # multiple spaces after ':'
+    E251,  # unexpected spaces around keyword / parameter equals
+    E266,  # too many leading '#' for block comment
+    E272,  # multiple spaces before keyword
+    E302,  # expected 2 blank lines, found 1
+    E701,  # multiple statements on one line (colon)
+    W504,  # line break after binary operator
+
+max-line-length = 80

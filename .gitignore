@@ -1,0 +1,10 @@
+/data
+/model
+/log
+/backup
+*test*/
+*.pyc
+run*.sh
+test_only*
+hello*
+log*.txt
