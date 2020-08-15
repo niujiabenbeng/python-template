@@ -4,12 +4,12 @@
 import os
 import pickle
 import logging
-import threading
+import multiprocessing
 
 
 ### 全局锁
 # pylint: disable=invalid-name
-global_lock = threading.Lock()
+global_lock = multiprocessing.Lock()
 
 
 def prepare_dir(path):
@@ -19,10 +19,9 @@ def prepare_dir(path):
     ### 当前目录直接返回
     if not dirname: return None
 
-    global_lock.acquire()
     if not os.path.exists(dirname):
-        os.makedirs(dirname)
-    global_lock.release()
+        with global_lock:
+            os.makedirs(dirname)
     return None
 
 
