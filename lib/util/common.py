@@ -70,5 +70,37 @@ def initialize_logger(name=None, file=None, display=True):
     return logger
 
 
+def COLOR(text, color):
+    ansi_colors = {
+        "black":     "0;30",    "bright black":     "0;90",
+        "red":       "0;31",    "bright red":       "0;91",
+        "green":     "0;32",    "bright green":     "0;92",
+        "yellow":    "0;33",    "bright yellow":    "0;93",
+        "blue":      "0;34",    "bright blue":      "0;94",
+        "magenta":   "0;35",    "birght magenta":   "0;95",
+        "cyan":      "0;36",    "bright cyan":      "0;96",
+        "white":     "0;37",    "brignt white":     "0;97",
+    }
+    all_colors = {}
+    for key, value in ansi_colors.items():
+        all_colors[key.lower().replace(" ", "")] = value
+    all_colors["gray"] = ansi_colors["bright black"]
+
+    color = color.lower().replace(" ", "")
+    assert color in all_colors, f"Unknown color: {color}"
+    return f"\033[{all_colors[color]}m{text}\033[0m"
+
+
+def BLACK(text):    return COLOR(text, "black")    # noqa: E704
+def RED(text):      return COLOR(text, "red")      # noqa: E704
+def GREEN(text):    return COLOR(text, "green")    # noqa: E704
+def YELLOW(text):   return COLOR(text, "yellow")   # noqa: E704
+def BLUE(text):     return COLOR(text, "blue")     # noqa: E704
+def MAGENTA(text):  return COLOR(text, "magenta")  # noqa: E704
+def CYAN(text):     return COLOR(text, "cyan")     # noqa: E704
+def WHITE(text):    return COLOR(text, "white")    # noqa: E704
+def GRAY(text):     return COLOR(text, "gray")     # noqa: E704
+
+
 if __name__ == "__main__":
     pass
