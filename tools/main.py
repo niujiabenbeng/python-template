@@ -6,6 +6,7 @@
 # pylint: disable=import-error
 
 import time
+import random
 import logging
 
 import init
@@ -20,6 +21,7 @@ def sleep_and_add_one(seconds):
 def main():
     start_time = time.time()
     samples = list(range(1, 10))
+    random.shuffle(samples)
     results = lib.util.TaskPool.map(4, sleep_and_add_one, samples)
     logging.info("samples: %s", samples)
     logging.info("results: %s", results)

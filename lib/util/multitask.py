@@ -8,8 +8,15 @@ import multiprocessing
 #################### multiprocessing with initialization #######################
 
 class TaskProcess(multiprocessing.Process):
+    """进程类, 不同的进程可以用不同的初始化参数.
+
+    这个类将资源的初始化工作放到进程开始之后执行, 避免了进程间数据的拷贝.
+    """
+
     def __init__(self, task_class, task_args, input_queue, output_queue):
         super().__init__()
+        assert hasattr(task_class, "process")
+        assert isinstance(task_args, (tuple, list))
         self.task_class = task_class
         self.task_args = task_args
         self.input_queue = input_queue
@@ -41,11 +48,13 @@ class TaskPool:
     """
 
     def __init__(self, task_class, task_args):
+        assert hasattr(task_class, "process")
+        assert isinstance(task_args, (tuple, list))
         self.input_queue = multiprocessing.Queue()
         self.output_queue = multiprocessing.Queue()
 
         self.processes = []
-        for pid, args in enumerate(task_args):
+        for args in task_args:
             self.processes.append(TaskProcess(
                 task_class, args,
                 self.input_queue,
