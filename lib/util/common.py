@@ -33,6 +33,24 @@ def dump_to_file(data, path):
         pickle.dump(data, dstfile, protocol=2)
 
 
+def read_list_file(path):
+    "Read file as a list of strings."
+
+    if not path: return None
+    with open(path, "r") as srcfile:
+        lines = [l.strip() for l in srcfile]
+    return lines
+
+
+def read_map_file(path):
+    "Read file as a dictionay."
+
+    if not path: return None
+    with open(path, "r") as srcfile:
+        lines = [l.strip().split() for l in srcfile]
+    return dict(lines)
+
+
 def initialize_logger(name=None, file=None, display=True):
     """Configurate logger based on settings.
 
