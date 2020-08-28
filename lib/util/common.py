@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import os
+import json
 import pickle
 import logging
 import multiprocessing
@@ -26,11 +27,35 @@ def prepare_dir(path):
 
 
 def dump_to_file(data, path):
-    """dump data to file."""
+    """Dump data to file."""
 
     prepare_dir(path)
     with open(path, "wb") as dstfile:
         pickle.dump(data, dstfile, protocol=2)
+
+
+def dump_to_json(data, path):
+    "Dump data to file in json format."
+
+    prepare_dir(path)
+    with open(path, "w") as dstfile:
+        json.dump(data, dstfile, indent=2)
+
+
+def read_pickle_file(path):
+    "Read file in pickle format."
+
+    if not path: return None
+    with open(path, "rb") as srcfile:
+        return pickle.load(srcfile)
+
+
+def read_json_file(path):
+    "Read file in json format."
+
+    if not path: return None
+    with open(path, "rb") as srcfile:
+        return json.load(srcfile)
 
 
 def read_list_file(path):
