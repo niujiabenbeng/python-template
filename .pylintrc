@@ -24,3 +24,6 @@ max-line-length=80
 attr-rgx=[a-z_][a-z0-9_]{0,30}$
 argument-rgx=[a-z_][a-z0-9_]{0,30}$
 variable-rgx=[a-z_][a-z0-9_]{0,30}$
+
+[MISCELLANEOUS]
+notes=
