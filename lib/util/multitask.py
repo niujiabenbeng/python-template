@@ -147,7 +147,6 @@ class TaskPool:
         ### 必须保证子进程中的queue都为空, 否则会造成死锁
         for proc in self.processes:
             proc.join()
-        return None
 
     @staticmethod
     def get_pool(numthreads, taskfun, args=tuple()):

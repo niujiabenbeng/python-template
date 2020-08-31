@@ -23,7 +23,6 @@ def prepare_dir(path):
     if not os.path.exists(dirname):
         with global_lock:
             os.makedirs(dirname)
-    return None
 
 
 def dump_to_file(data, path):
