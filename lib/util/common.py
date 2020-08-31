@@ -58,13 +58,14 @@ def read_json_file(path):
         return json.load(srcfile)
 
 
-def read_list_file(path):
+def read_list_file(path, sep=None):
     "Read file as a list of strings."
 
     if not path: return None
     with open(path, "r") as srcfile:
-        lines = [l.strip() for l in srcfile]
-    return lines
+        if isinstance(sep, str):
+            return [l.strip().split(sep) for l in srcfile]
+        return [l.strip() for l in srcfile]
 
 
 def read_map_file(path):

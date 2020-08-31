@@ -7,6 +7,7 @@ disable=
     C0326, # bad-whitespace
     R0914, # too-many-locals
     R0902, # too-many-instance-attributes
+    R0903, # too-few-public-methods
     R0913, # too-many-arguments
     W0221, # arguments-differ
     W0612, # unused-variable
@@ -20,5 +21,6 @@ generated-members=numpy.*,
 max-line-length=80
 
 [BASIC]
-argument-rgx=[a-z_][a-z0-9_]{1,30}$
-variable-rgx=[a-z_][a-z0-9_]{1,30}$
+attr-rgx=[a-z_][a-z0-9_]{0,30}$
+argument-rgx=[a-z_][a-z0-9_]{0,30}$
+variable-rgx=[a-z_][a-z0-9_]{0,30}$
