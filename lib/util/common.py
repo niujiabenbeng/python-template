@@ -7,9 +7,6 @@ import pickle
 import logging
 import multiprocessing
 
-
-### 全局锁
-# pylint: disable=invalid-name
 global_lock = multiprocessing.Lock()
 
 
@@ -17,7 +14,7 @@ def prepare_dir(path):
     """Make dir if necessary."""
 
     dirname = os.path.dirname(path)
-    ### 当前目录直接返回
+    # 当前目录直接返回
     if not dirname: return None
 
     if not os.path.exists(dirname):
@@ -92,7 +89,7 @@ def initialize_logger(name=None, file=None, display=True):
     logger = logging.getLogger(name)
     if logger.handlers: return logger
 
-    ### 局部的logger是全局logger的child, 这里防止局部的log扩散到全局log中
+    # 局部的logger是全局logger的child, 这里防止局部的log扩散到全局log中
     logger.propagate = False
     logger.setLevel(logging.INFO)
 
@@ -114,6 +111,7 @@ def initialize_logger(name=None, file=None, display=True):
 
 
 def COLOR(text, color):
+    # yapf: disable
     ansi_colors = {
         "black":     "0;30",    "bright black":     "0;90",
         "red":       "0;31",    "bright red":       "0;91",
@@ -124,6 +122,7 @@ def COLOR(text, color):
         "cyan":      "0;36",    "bright cyan":      "0;96",
         "white":     "0;37",    "brignt white":     "0;97",
     }
+    # yapf: enable
     all_colors = {}
     for key, value in ansi_colors.items():
         all_colors[key.lower().replace(" ", "")] = value
@@ -134,15 +133,16 @@ def COLOR(text, color):
     return f"\033[{all_colors[color]}m{text}\033[0m"
 
 
-def BLACK(text):    return COLOR(text, "black")    # noqa: E704
-def RED(text):      return COLOR(text, "red")      # noqa: E704
-def GREEN(text):    return COLOR(text, "green")    # noqa: E704
-def YELLOW(text):   return COLOR(text, "yellow")   # noqa: E704
-def BLUE(text):     return COLOR(text, "blue")     # noqa: E704
-def MAGENTA(text):  return COLOR(text, "magenta")  # noqa: E704
-def CYAN(text):     return COLOR(text, "cyan")     # noqa: E704
-def WHITE(text):    return COLOR(text, "white")    # noqa: E704
-def GRAY(text):     return COLOR(text, "gray")     # noqa: E704
+# yapf: disable
+def BLACK(text):    return COLOR(text, "black")
+def RED(text):      return COLOR(text, "red")
+def GREEN(text):    return COLOR(text, "green")
+def YELLOW(text):   return COLOR(text, "yellow")
+def BLUE(text):     return COLOR(text, "blue")
+def MAGENTA(text):  return COLOR(text, "magenta")
+def CYAN(text):     return COLOR(text, "cyan")
+def WHITE(text):    return COLOR(text, "white")
+def GRAY(text):     return COLOR(text, "gray")
 
 
 if __name__ == "__main__":

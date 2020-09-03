@@ -5,7 +5,6 @@ import time
 import logging
 import multiprocessing
 
-#################### multiprocessing with initialization #######################
 
 class TaskProcess(multiprocessing.Process):
     """进程类, 不同的进程可以用不同的初始化参数.
@@ -55,11 +54,11 @@ class TaskPool:
 
     def __init__(self, task_class, task_args):
         assert hasattr(task_class, "process")
-        ### 这里task_args是一个参数列表, 其中的一项才是task_class的初始化参数
+        # 这里task_args是一个参数列表, 其中的一项才是task_class的初始化参数
         assert isinstance(task_args, (tuple, list))
         self.input_queue = multiprocessing.Queue()
         self.output_queue = multiprocessing.Queue()
-        ### 如果线程数是1, 就直接串行处理
+        # 如果线程数是1, 就直接串行处理
         self.is_single_thread = (len(task_args) <= 1)
 
         if self.is_single_thread:
@@ -70,13 +69,11 @@ class TaskPool:
         else:
             self.processes = []
             for args in task_args:
-                self.processes.append(TaskProcess(
-                    task_class, args,
-                    self.input_queue,
-                    self.output_queue))
+                self.processes.append(
+                    TaskProcess(task_class, args, self.input_queue,
+                                self.output_queue))
                 self.processes[-1].start()
 
-    # pylint: disable=too-many-branches
     def process(self, samples, batch_size=0):
         """多进程批量处理函数, 类似于pool.map.
 
@@ -103,7 +100,7 @@ class TaskPool:
         batch_size = batch_size or len(samples)
         num_samples = len(samples)
 
-        ### 装载首个batch
+        # 装载首个batch
         batch_samples = samples[:batch_size]
         samples = samples[batch_size:]
         for sample in batch_samples:
@@ -114,7 +111,7 @@ class TaskPool:
         while len(results) < num_samples:
             if self.input_queue.qsize() < batch_size and len(samples) != 0:
                 if self.input_queue.empty():
-                    ### 这里提醒一下要提高batch_size
+                    # 这里提醒一下要提高batch_size
                     logging.warning("input queue is empty, time wasted.")
                 batch_samples = samples[:batch_size]
                 samples = samples[batch_size:]
@@ -138,13 +135,13 @@ class TaskPool:
 
         if self.is_single_thread: return None
 
-        ### 传递None让子进程退出
+        # 传递None让子进程退出
         for proc in self.processes:
             self.input_queue.put((None, None))
         while not self.input_queue.empty():
             time.sleep(1)
 
-        ### 必须保证子进程中的queue都为空, 否则会造成死锁
+        # 必须保证子进程中的queue都为空, 否则会造成死锁
         for proc in self.processes:
             proc.join()
 
@@ -158,6 +155,7 @@ class TaskPool:
         """
 
         class _ProxyTaskClass:
+
             def __init__(self, taskfun, args):
                 self.args = args if isinstance(args, tuple) else (args,)
                 self.taskfun = taskfun

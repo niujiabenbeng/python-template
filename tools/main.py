@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # pylint: disable=unused-import
-# pylint: disable=import-error
+# pylint: disable=wrong-import-order
 
 import logging
 
@@ -11,17 +11,15 @@ import lib.util
 
 
 def main():
-    logging.info("log in color: %s", ", ".join([
-        lib.util.BLACK("black"),
-        lib.util.RED("Red"),
-        lib.util.GREEN("Green"),
-        lib.util.YELLOW("yellow"),
-        lib.util.BLUE("Blue"),
-        lib.util.MAGENTA("magenta"),
-        lib.util.CYAN("cyan"),
-        lib.util.WHITE("white"),
-        lib.util.GRAY("gray"),
-    ]))
+    logging.info("log in color: %s", lib.util.BLACK("black"))
+    logging.info("log in color: %s", lib.util.RED("Red"))
+    logging.info("log in color: %s", lib.util.GREEN("Green"))
+    logging.info("log in color: %s", lib.util.YELLOW("yellow"))
+    logging.info("log in color: %s", lib.util.BLUE("Blue"))
+    logging.info("log in color: %s", lib.util.MAGENTA("magenta"))
+    logging.info("log in color: %s", lib.util.CYAN("cyan"))
+    logging.info("log in color: %s", lib.util.WHITE("white"))
+    logging.info("log in color: %s", lib.util.GRAY("gray"))
 
 
 if __name__ == '__main__':

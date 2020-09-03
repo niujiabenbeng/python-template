@@ -1,9 +1,6 @@
 #! /home/chenli/Documents/tools/anaconda3/envs/pytorch/bin/python
 # coding: utf-8
 
-# flake8: noqa
-# pylint: disable=all
-
 import os
 import sys
 import warnings

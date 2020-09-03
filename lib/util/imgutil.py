@@ -10,24 +10,33 @@ import PIL.ImageFont
 import PIL.ImageDraw
 
 
-# pylint: disable=invalid-name
 def convert_image_CV2PIL(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = PIL.Image.fromarray(image)
     return image
 
 
-def draw_textlines(image, origin, textlines, color, thickness=2,
-                   font_face=cv2.FONT_HERSHEY_SIMPLEX, font_scale=1.2):
+def draw_textlines(image,
+                   origin,
+                   textlines,
+                   color,
+                   thickness=2,
+                   font_face=cv2.FONT_HERSHEY_SIMPLEX,
+                   font_scale=1.2):
+    face = font_face
+    scale = font_scale
     for text in textlines:
-        size, baseline = cv2.getTextSize(text, font_face, font_scale, thickness)
+        size, baseline = cv2.getTextSize(text, face, scale, thickness)
         origin = (origin[0], origin[1] + size[1] + baseline)
-        cv2.putText(image, text, origin, font_face, font_scale,
-                    color, thickness)
+        cv2.putText(image, text, origin, face, scale, color, thickness)
     return image
 
 
-def draw_chinese_textlines(image, origin, textlines, color, size=26,
+def draw_chinese_textlines(image,
+                           origin,
+                           textlines,
+                           color,
+                           size=26,
                            thickness=2):
     """采用PIL往图片上写中文."""
 
@@ -69,7 +78,7 @@ def stitch_images(images, width=512, height=384, fill=(0, 0, 0)):
     for i, image in enumerate(images):
         if image is None: continue
 
-        #### 有需要的话进行保长宽比的resize
+        # 有需要的话进行保长宽比的resize
         old_height, old_width = image.shape[:2]
         if old_height > height or old_width > width:
             new_height = height

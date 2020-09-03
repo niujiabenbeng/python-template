@@ -2,7 +2,7 @@
 # coding: utf-8
 
 # pylint: disable=unused-import
-# pylint: disable=import-error
+# pylint: disable=wrong-import-order
 
 import unittest
 
@@ -11,72 +11,85 @@ import lib.util
 
 
 class TestMultiTask(unittest.TestCase):
+
     def test_function_args_none(self):
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=1,
-            taskfun=lambda: 1,
-            samples=[tuple()] * 10,
-        ), [1] * 10)
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=4,
-            taskfun=lambda: 1,
-            samples=[tuple()] * 10,
-        ), [1] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=1,
+                taskfun=lambda: 1,
+                samples=[tuple()] * 10,
+            ), [1] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=4,
+                taskfun=lambda: 1,
+                samples=[tuple()] * 10,
+            ), [1] * 10)
 
     def test_function_args_one(self):
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=1,
-            taskfun=lambda x: x + 1,
-            samples=list(range(10))
-        ), list(range(1, 11)))
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=4,
-            taskfun=lambda x: x + 1,
-            samples=list(range(10)),
-        ), list(range(1, 11)))
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=1,
+                taskfun=lambda x: x + 1,
+                samples=list(range(10)),
+            ), list(range(1, 11)))
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=4,
+                taskfun=lambda x: x + 1,
+                samples=list(range(10)),
+            ), list(range(1, 11)))
 
     def test_function_args_two(self):
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=1,
-            taskfun=(lambda x, y: x + y),
-            samples=[(x, -x) for x in range(10)],
-        ), [0] * 10)
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=4,
-            taskfun=(lambda x, y: x + y),
-            samples=[(x, -x) for x in range(10)],
-        ), [0] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=1,
+                taskfun=(lambda x, y: x + y),
+                samples=[(x, -x) for x in range(10)],
+            ), [0] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=4,
+                taskfun=(lambda x, y: x + y),
+                samples=[(x, -x) for x in range(10)],
+            ), [0] * 10)
 
     def test_function_args_common_one(self):
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=1,
-            taskfun=lambda x: x + 1,
-            samples=[tuple()] * 10,
-            args=4,
-        ), [5] * 10)
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=4,
-            taskfun=lambda x: x + 1,
-            samples=[tuple()] * 10,
-            args=4,
-        ), [5] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=1,
+                taskfun=lambda x: x + 1,
+                samples=[tuple()] * 10,
+                args=4,
+            ), [5] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=4,
+                taskfun=lambda x: x + 1,
+                samples=[tuple()] * 10,
+                args=4,
+            ), [5] * 10)
 
     def test_function_args_common_tuple(self):
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=1,
-            taskfun=lambda x, y: x + y,
-            samples=[tuple()] * 10,
-            args=(4, 5),
-        ), [9] * 10)
-        self.assertEqual(lib.util.TaskPool.map(
-            numthreads=4,
-            taskfun=lambda x, y: x + y,
-            samples=[tuple()] * 10,
-            args=(4, 5),
-        ), [9] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=1,
+                taskfun=lambda x, y: x + y,
+                samples=[tuple()] * 10,
+                args=(4, 5),
+            ), [9] * 10)
+        self.assertEqual(
+            lib.util.TaskPool.map(
+                numthreads=4,
+                taskfun=lambda x, y: x + y,
+                samples=[tuple()] * 10,
+                args=(4, 5),
+            ), [9] * 10)
 
     def test_class_args_none(self):
+
         class TestClass:
+
             def __init__(self):
                 self.value = 1
 
@@ -94,7 +107,9 @@ class TestMultiTask(unittest.TestCase):
         pool.finish()
 
     def test_class_args_one(self):
+
         class TestClass:
+
             def __init__(self, value):
                 self.value = value
 
@@ -112,7 +127,9 @@ class TestMultiTask(unittest.TestCase):
         pool.finish()
 
     def test_class_args_two(self):
+
         class TestClass:
+
             def __init__(self, x, y):
                 self.x = x
                 self.y = y
