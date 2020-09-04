@@ -17,13 +17,8 @@ disable=
 
 extension-pkg-whitelist=numpy,cv2
 
-init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
-
 [FORMAT]
 max-line-length=80
 
 [MISCELLANEOUS]
 notes=
-
-
-
