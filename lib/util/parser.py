@@ -19,50 +19,72 @@ def add_common_argument(parser, args):
                 "--train_sample_file",
                 type=str,
                 default=value,
-                help="path of file containing list of samples for training.",
-            )
+                help="path of file containing list of samples for training.")
+
         elif key == "train_root":
             parser.add_argument(
                 "--train_root",
                 type=str,
                 default=value,
-                help="root directory of training samples.",
-            )
+                help="root directory of training samples.")
+
         elif key == "test_sample_file":
             parser.add_argument(
                 "--test_sample_file",
                 type=str,
                 default=value,
-                help="path of file containing list of samples for test.",
-            )
+                help="path of file containing list of samples for test.")
+
         elif key == "test_root":
             parser.add_argument(
                 "--test_root",
                 type=str,
                 default=value,
-                help="root directory of test samples.",
-            )
+                help="root directory of test samples.")
+
         elif key == "sample_file":
             parser.add_argument(
                 "--sample_file",
                 type=str,
                 default=value,
-                help="path of file containing list of samples.",
-            )
+                help="path of file containing list of samples.")
+
         elif key == "sample_root":
             parser.add_argument(
                 "--sample_root",
                 type=str,
                 default=value,
-                help="root directory of samples.",
-            )
+                help="root directory of samples.")
+
+        # barcode & labels
+        elif key == "barcode_file":
+            parser.add_argument(
+                "--barcode_file",
+                type=str,
+                default=value,
+                help="Path of file which contains list of barcodes.")
+
         elif key == "label_file":
             parser.add_argument(
                 "--label_file",
                 type=str,
                 default=value,
-                help="path of file containing list of class names.",
-            )
+                help="path of file containing list of labels.")
+
+        elif key == "label_map_file":
+            parser.add_argument(
+                "--label_map_file",
+                type=str,
+                default=value,
+                help="Path of file which contains the mapping from barcode "
+                "to model label.")
+
+        elif key == "goods_map_file":
+            parser.add_argument(
+                "--goods_map_file",
+                type=str,
+                help="Path of file which contains the mapping from barcode "
+                "to goods code.")
 
         # device_id
         elif key == "dali_device_id":
@@ -70,22 +92,19 @@ def add_common_argument(parser, args):
                 "--dali_device_id",
                 type=int,
                 default=value,
-                help="device id for nvidia dali.",
-            )
+                help="device id for nvidia dali.")
+
         elif key == "torch_device_id":
             parser.add_argument(
                 "--torch_device_id",
                 type=int,
                 default=value,
-                help="device id for pytorch.",
-            )
+                help="device id for pytorch.")
+
         elif key == "device_id":
             parser.add_argument(
-                "--device_id",
-                type=int,
-                default=value,
-                help="device id.",
-            )
+                "--device_id", type=int, default=value, help="device id.")
+
         elif key == "gpuids":
             parser.add_argument(
                 "--gpuids",
@@ -93,53 +112,48 @@ def add_common_argument(parser, args):
                 default=value,
                 help="specify how many instances to be created on given "
                 "gpus, eg: '1,1,2' means gpu1 has two instances and gpu2 "
-                "has one instance.",
-            )
+                "has one instance.")
 
-        ### others
+        # others
         elif key == "num_classes":
             parser.add_argument(
                 "--num_classes",
                 type=int,
                 default=value,
-                help="number of classes.",
-            )
+                help="number of classes.")
+
         elif key == "num_epoches":
             parser.add_argument(
                 "--num_epoches",
                 type=int,
                 default=value,
-                help="number of epoches performed in the training step.",
-            )
+                help="number of epoches performed in the training step.")
+
         elif key == "prefix":
             parser.add_argument(
                 "--prefix",
                 type=str,
                 default=value,
-                help="Prefix of path where the trained models are stored.",
-            )
+                help="Prefix of path where the trained models are stored.")
+
         elif key == "checkpoint":
             parser.add_argument(
                 "--checkpoint",
                 type=str,
                 default=value,
                 help="Path of model which is to be evaluated or to be "
-                "finetuned.",
-            )
+                "finetuned.")
+
         elif key == "batch_size":
             parser.add_argument(
-                "--batch_size",
-                type=int,
-                default=value,
-                help="batch size",
-            )
+                "--batch_size", type=int, default=value, help="batch size")
+
         elif key == "num_threads":
             parser.add_argument(
                 "--num_threads",
                 type=int,
                 default=value,
-                help="num of threads (used in multithreading case)",
-            )
+                help="num of threads (used in multithreading case)")
 
         else:
             assert False, "Unknown argument: {}".format(key)

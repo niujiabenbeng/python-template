@@ -17,9 +17,8 @@ def prepare_dir(path):
     # 当前目录直接返回
     if not dirname: return None
 
-    if not os.path.exists(dirname):
-        with global_lock:
-            os.makedirs(dirname)
+    with global_lock:
+        os.makedirs(dirname, exist_ok=True)
 
 
 def dump_to_file(data, path):
@@ -62,6 +61,16 @@ def read_list_file(path, sep=None):
         if isinstance(sep, str):
             return [l.strip().split(sep) for l in srcfile]
         return [l.strip() for l in srcfile]
+
+
+def read_list_field(path, field=0, sep=" "):
+    "Read file and extract filed."
+
+    lines = read_list_file(path, sep)
+    if not lines: return None
+    if isinstance(field, int):
+        return [n[field] for n in lines]
+    return [[n[i] for i in field] for n in lines]
 
 
 def read_map_file(path):

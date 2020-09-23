@@ -15,10 +15,17 @@ disable=
     W0221, # arguments-differ
     W0612, # unused-variable
 
-extension-pkg-whitelist=numpy,cv2
+extension-pkg-whitelist=numpy,cv2,torch,GoodsReq
+
+ignore-patterns=goods_flask_pb2.py
 
 [FORMAT]
 max-line-length=80
 
 [MISCELLANEOUS]
 notes=
+
+
+[TYPECHECK]
+ignored-modules=numpy,cv2,torch,GoodsReq
+ignored-classes=numpy,cv2,torch,GoodsReq

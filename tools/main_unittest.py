@@ -32,13 +32,13 @@ class TestMultiTask(unittest.TestCase):
                 numthreads=1,
                 taskfun=lambda x: x + 1,
                 samples=list(range(10)),
-            ), list(range(1, 11)))
+            ), list(range(1, 11)))  # yapf: disable
         self.assertEqual(
             lib.util.TaskPool.map(
                 numthreads=4,
                 taskfun=lambda x: x + 1,
                 samples=list(range(10)),
-            ), list(range(1, 11)))
+            ), list(range(1, 11)))  # yapf: disable
 
     def test_function_args_two(self):
         self.assertEqual(
@@ -74,14 +74,16 @@ class TestMultiTask(unittest.TestCase):
         self.assertEqual(
             lib.util.TaskPool.map(
                 numthreads=1,
-                taskfun=lambda x, y: x + y,
+                taskfun=lambda x,
+                y: x + y,
                 samples=[tuple()] * 10,
                 args=(4, 5),
             ), [9] * 10)
         self.assertEqual(
             lib.util.TaskPool.map(
                 numthreads=4,
-                taskfun=lambda x, y: x + y,
+                taskfun=lambda x,
+                y: x + y,
                 samples=[tuple()] * 10,
                 args=(4, 5),
             ), [9] * 10)

@@ -7,4 +7,6 @@
 run*.sh
 test_only*
 hello*
+goods_flask_pb2.py
 log*.txt
+build/

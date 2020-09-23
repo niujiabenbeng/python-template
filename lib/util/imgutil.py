@@ -10,47 +10,19 @@ import PIL.ImageFont
 import PIL.ImageDraw
 
 
-def convert_image_CV2PIL(image):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = PIL.Image.fromarray(image)
-    return image
+def draw_textlines(image, origin, textlines, color, size=26, thickness=2):
+    """在图片上写文字, 支持中文."""
 
-
-def draw_textlines(image,
-                   origin,
-                   textlines,
-                   color,
-                   thickness=2,
-                   font_face=cv2.FONT_HERSHEY_SIMPLEX,
-                   font_scale=1.2):
-    face = font_face
-    scale = font_scale
-    for text in textlines:
-        size, baseline = cv2.getTextSize(text, face, scale, thickness)
-        origin = (origin[0], origin[1] + size[1] + baseline)
-        cv2.putText(image, text, origin, face, scale, color, thickness)
-    return image
-
-
-def draw_chinese_textlines(image,
-                           origin,
-                           textlines,
-                           color,
-                           size=26,
-                           thickness=2):
-    """采用PIL往图片上写中文."""
-
-    pilimg = PIL.Image.fromarray(image[:, :, ::-1])
-    draw = PIL.ImageDraw.Draw(pilimg)
+    img = PIL.Image.fromarray(image)
+    draw = PIL.ImageDraw.Draw(img)
     font = PIL.ImageFont.truetype('simsun.ttc', size)
     for n, text in enumerate(textlines):
         offset_y = n * size + thickness
         for i in range(0, thickness):
             for j in range(0, thickness):
-                origin_tmp = (origin[0] + i, origin[1] + j + offset_y)
-                draw.text(origin_tmp, text, font=font, fill=color[::-1])
-    result = np.asarray(pilimg.getdata(), dtype=np.uint8).reshape(image.shape)
-    return np.require(result[:, :, ::-1], dtype=np.uint8, requirements="C")
+                org = (origin[0] + i, origin[1] + j + offset_y)
+                draw.text(org, text, font=font, fill=color)
+    return np.array(img)
 
 
 def stitch_images(images, width=512, height=384, fill=(0, 0, 0)):

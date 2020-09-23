@@ -70,7 +70,9 @@ class TaskPool:
             self.processes = []
             for args in task_args:
                 self.processes.append(
-                    TaskProcess(task_class, args, self.input_queue,
+                    TaskProcess(task_class,
+                                args,
+                                self.input_queue,
                                 self.output_queue))
                 self.processes[-1].start()
 
@@ -92,7 +94,9 @@ class TaskPool:
                 else:
                     results.append(self.task_instance.process(sample))
                 if time.time() - start_time > 5:
-                    logging.info("Progress %d/%d", sid, len(samples))
+                    logging.info("Progress (sequential) %d/%d",
+                                 sid,
+                                 len(samples))
                     start_time = time.time()
             return results
 
@@ -122,7 +126,10 @@ class TaskPool:
             if len(results) < num_samples:
                 time.sleep(1)  # 这里sleep的时间不能过长
             if time.time() - start_time > 5:
-                logging.info("Progress %d/%d", len(results), num_samples)
+                logging.info("Progress (threads %d) %d/%d",
+                             len(self.processes),
+                             len(results),
+                             num_samples)
                 start_time = time.time()
 
         results.sort(key=lambda x: x[0])
@@ -144,6 +151,7 @@ class TaskPool:
         # 必须保证子进程中的queue都为空, 否则会造成死锁
         for proc in self.processes:
             proc.join()
+        return None
 
     @staticmethod
     def get_pool(numthreads, taskfun, args=tuple()):
