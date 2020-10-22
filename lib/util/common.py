@@ -5,6 +5,7 @@ import os
 import json
 import pickle
 import logging
+import datetime
 import multiprocessing
 
 global_lock = multiprocessing.Lock()
@@ -117,6 +118,21 @@ def initialize_logger(name=None, file=None, display=True):
         logger.addHandler(console)
 
     return logger
+
+
+def get_global_logger(logging_root):
+    date = str(datetime.date.today())
+    logging_file = os.path.join(logging_root, date, "log_global.txt")
+    prepare_dir(logging_file)
+    return initialize_logger(None, logging_file, True)
+
+
+def get_local_logger(name, logging_root):
+    assert name != "global"
+    date = str(datetime.date.today())
+    logging_file = os.path.join(logging_root, date, f"log_{name}.txt")
+    prepare_dir(logging_file)
+    return initialize_logger(name, logging_file, False)
 
 
 def COLOR(text, color):
