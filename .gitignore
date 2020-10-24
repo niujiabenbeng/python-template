@@ -10,3 +10,4 @@ hello*
 goods_flask_pb2.py
 log*.txt
 build/
+.idea/
