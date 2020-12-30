@@ -10,13 +10,14 @@ import PIL.ImageFont
 import PIL.ImageDraw
 
 
-def draw_textlines(image, origin, textlines, color, size=26, thickness=2):
+def draw_textlines(image, origin, lines, color, size=26, thickness=2):
     """在图片上写文字, 支持中文."""
 
     img = PIL.Image.fromarray(image)
     draw = PIL.ImageDraw.Draw(img)
     font = PIL.ImageFont.truetype('simsun.ttc', size)
-    for n, text in enumerate(textlines):
+    if isinstance(lines, str): lines = [lines]
+    for n, text in enumerate(lines):
         offset_y = n * size + thickness
         for i in range(0, thickness):
             for j in range(0, thickness):
@@ -34,6 +35,7 @@ def stitch_images(images, width=512, height=384, fill=(0, 0, 0)):
     """
 
     assert len(images) <= 9
+    rows = cols = 1
     if len(images) <= 1:
         rows, cols = 1, 1
     elif len(images) <= 2:

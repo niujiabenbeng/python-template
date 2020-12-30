@@ -15,6 +15,12 @@ yapf -ir lib tools   # 使用本目录中的.style.yapf
 ```
 
 
+### 多线程问题
+
+Linux下多线程没问题, Windows下pickle无法打包局部名字空间, 用了dill之后也不行,
+这里限制一下, Windows下需要处理的task需要位于全局名字空间.
+
+
 ### 中文字体支持
 
 lib.util.draw_chinese_textlines()方法用的是宋体, 字体文件为simsun.ttc.

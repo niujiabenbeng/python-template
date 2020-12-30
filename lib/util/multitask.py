@@ -34,6 +34,17 @@ class TaskProcess(multiprocessing.Process):
                 self.output_queue.put((sid, task.process(sample)))
 
 
+class _ProxyTaskClass:
+    """本类将函数转包装成类. 供TaskProcess使用."""
+
+    def __init__(self, taskfun, args):
+        self.args = args if isinstance(args, tuple) else (args,)
+        self.taskfun = taskfun
+
+    def process(self, *sample):
+        return self.taskfun(*sample, *self.args)
+
+
 class TaskPool:
     """带初始化的多进程Pool.
 
@@ -161,16 +172,6 @@ class TaskPool:
             如下: taskfun(sample, args), 如果sample或者args为tuple, 则将其
             展开: taskfun(*sample, *args).
         """
-
-        class _ProxyTaskClass:
-
-            def __init__(self, taskfun, args):
-                self.args = args if isinstance(args, tuple) else (args,)
-                self.taskfun = taskfun
-
-            def process(self, *sample):
-                return self.taskfun(*sample, *self.args)
-
         return TaskPool(_ProxyTaskClass, [(taskfun, args)] * numthreads)
 
     @staticmethod
