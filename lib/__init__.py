@@ -1,2 +1,2 @@
-#! /home/chenli/Documents/tools/anaconda3/envs/pytorch/bin/python
+#! /usr/bin/env python
 # coding: utf-8

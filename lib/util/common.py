@@ -1,4 +1,4 @@
-#! /home/chenli/Documents/tools/anaconda3/envs/pytorch/bin/python
+#! /usr/bin/env python
 # coding: utf-8
 
 import os
@@ -7,6 +7,8 @@ import pickle
 import logging
 import datetime
 import multiprocessing
+
+import tqdm
 
 global_lock = multiprocessing.Lock()
 
@@ -26,6 +28,7 @@ def read_pickle_file(path):
     "Read file in pickle format."
 
     if not path: return None
+    if not os.path.exists(path): return None
     with open(path, "rb") as srcfile:
         return pickle.load(srcfile)
 
@@ -34,6 +37,7 @@ def read_json_file(path):
     "Read file in json format."
 
     if not path: return None
+    if not os.path.exists(path): return None
     with open(path, "rb") as srcfile:
         return json.load(srcfile)
 
@@ -42,6 +46,7 @@ def read_list_file(path, sep=None):
     "Read file as a list of strings."
 
     if not path: return None
+    if not os.path.exists(path): return None
     with open(path, "r") as srcfile:
         if isinstance(sep, str):
             return [l.strip().split(sep) for l in srcfile]
@@ -62,6 +67,7 @@ def read_map_file(path):
     "Read file as a dictionay."
 
     if not path: return None
+    if not os.path.exists(path): return None
     with open(path, "r") as srcfile:
         lines = [l.strip().split() for l in srcfile]
     return dict(lines)
@@ -92,6 +98,31 @@ def write_list_file(data, path, sep=" "):
             if isinstance(line, (tuple, list)):
                 line = sep.join([str(item) for item in line])
             dstfile.write(line + "\n")
+
+
+def traverse_directory(root, targetf=None, stopf=None):
+    """Traverse directory.
+
+    Args:
+        targetf: function with one argument. Check whether a target path
+            can be produced from the current path or not, if it is the
+            case, return target path, otherwise return None. When function
+            `targetf` returns a path, yield it.
+        stopf: function with one argument. Check whether to enter current
+            directory or not. If current path is a directory and this
+            function returns False, enter current path.
+    """
+
+    # 默认状况下, 遍历所有子文件夹, 且所有路径都是target.
+    stopf = stopf or (lambda path: False)
+    targetf = targetf or (lambda path: path)
+    if not os.path.exists(root): return
+    for name in os.listdir(root):
+        path = os.path.join(root, name)
+        target = targetf(path)
+        if target: yield target
+        if os.path.isdir(path) and (not stopf(path)):
+            yield from traverse_directory(path, targetf, stopf)
 
 
 def initialize_logger(name=None, file=None, display=True):
@@ -179,6 +210,17 @@ def MAGENTA(text):  return COLOR(text, "magenta")
 def CYAN(text):     return COLOR(text, "cyan")
 def WHITE(text):    return COLOR(text, "white")
 def GRAY(text):     return COLOR(text, "gray")
+# yapf: enable
+
+
+def get_progress_tracker(iterable=None, total=None):
+    return tqdm.tqdm(
+        iterable=iterable,
+        total=total,
+        mininterval=5,
+        ascii=True,
+        unit=" samples",
+    )
 
 
 if __name__ == "__main__":
