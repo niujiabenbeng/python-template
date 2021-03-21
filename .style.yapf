@@ -2,9 +2,8 @@
 based_on_style = google
 join_multiple_lines = true
 coalesce_brackets = true
-blank_line_before_nested_class_or_def = true
 blank_line_before_module_docstring = true
-split_all_comma_separated_values = false
+spaces_around_power_operator = true
+spaces_around_subscript_colon = true
 split_all_top_level_comma_separated_values = true
-split_before_first_argument = false
 split_before_expression_after_opening_paren = true
