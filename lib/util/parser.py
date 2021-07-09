@@ -3,6 +3,8 @@
 
 import logging
 
+__all__ = ("add_common_argument", "print_all_arguments")
+
 
 def add_common_argument(parser, args):
     """收集常用的command line参数, 在这里集中定义.

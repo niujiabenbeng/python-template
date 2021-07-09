@@ -18,6 +18,8 @@ import multiprocessing
 
 import lib.util
 
+__all__ = ("MapTaskPool", "ReduceTaskPool", "TaskPool")
+
 ################################ map operation #################################
 
 
@@ -60,7 +62,7 @@ class ProxyMapTaskClass:
 class MapTaskPoolSingleThread:
     """单进程TaskPool. 用于map操作."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "process")
         assert isinstance(task_args, list)
         assert len(task_args) == 1
@@ -69,11 +71,14 @@ class MapTaskPoolSingleThread:
             self.instance = task_class(*task_args)
         else:
             self.instance = task_class(task_args)
+        self.task_name = task_name or task_class.__name__
 
     def process(self, samples):
         results = []
+        if not samples: return []
         tracker = lib.util.get_progress_tracker(total=len(samples))
-        tracker.set_description("Progress (single thread)")
+        head = f"Task {self.task_name} (single thread)"
+        tracker.set_description(head)
         for sample in samples:
             if isinstance(sample, tuple):
                 results.append(self.instance.process(*sample))
@@ -91,7 +96,7 @@ class MapTaskPoolSingleThread:
 class MapTaskPoolMultiThread:
     """多进程TaskPool. 用于map操作."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "process")
         assert isinstance(task_args, list)
         assert len(task_args) > 1
@@ -108,10 +113,12 @@ class MapTaskPoolMultiThread:
             )
             self.processes.append(process)
             process.start()
+        self.task_name = task_name or task_class.__name__
 
     def process(self, samples):
         assert self.input_queue.empty()
         assert self.output_queue.empty()
+        if not samples: return []
 
         # 这里加上样本序号, 因为要对结果排序
         for sid, sample in enumerate(samples):
@@ -120,7 +127,8 @@ class MapTaskPoolMultiThread:
         results = []
         num_threads = len(self.processes)
         tracker = lib.util.get_progress_tracker(total=len(samples))
-        tracker.set_description(f"Progress (thread {num_threads})")
+        head = f"Task {self.task_name} (thread {num_threads})"
+        tracker.set_description(head)
         while len(results) < len(samples):
             if self.output_queue.empty(): time.sleep(1)
             while not self.output_queue.empty():
@@ -149,13 +157,15 @@ class MapTaskPoolMultiThread:
 class MapTaskPool:
     """用于map操作的TaskPool入口."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "process")
         assert isinstance(task_args, list)
         if len(task_args) == 1:
-            self.task_pool = MapTaskPoolSingleThread(task_class, task_args)
+            self.task_pool = MapTaskPoolSingleThread(
+                task_class, task_args, task_name)  # yapf: disable
         elif len(task_args) > 1:
-            self.task_pool = MapTaskPoolMultiThread(task_class, task_args)
+            self.task_pool = MapTaskPoolMultiThread(
+                task_class, task_args, task_name)  # yapf: disable
 
     def process(self, samples):
         return self.task_pool.process(samples)
@@ -164,7 +174,7 @@ class MapTaskPool:
         self.task_pool.finish()
 
     @staticmethod
-    def get_pool(num_threads, task_class_or_fun, args=tuple()):
+    def get_pool(num_threads, task_class_or_fun, args=tuple(), task_name=None):
         """函数版本的multiprocessing.Pool.
 
         task_class_or_fun (class or function):
@@ -177,17 +187,22 @@ class MapTaskPool:
 
         # `task_class_or_fun`是一个class.
         # 这里隐含了, 每一个class实例的初始化参数一致
+        task_name = task_name or task_class_or_fun.__name__
         if hasattr(task_class_or_fun, "process"):
-            return MapTaskPool(task_class_or_fun, [args] * len(num_threads))
+            task_args = [args] * len(num_threads)
+            return MapTaskPool(task_class_or_fun, task_args, task_name)
         # `task_class_or_fun`是一个function
         task_args = [(task_class_or_fun, args)] * num_threads
-        return MapTaskPool(ProxyMapTaskClass, task_args)
+        return MapTaskPool(ProxyMapTaskClass, task_args, task_name)
 
     @staticmethod
-    def map(num_threads, task_class_or_fun, samples, args=tuple()):
+    def map(num_threads, task_class_or_fun, samples, args=tuple(),
+            task_name=None):  # yapf:disable
         """函数版本的map. 参数请参考get_pool."""
 
-        pool = MapTaskPool.get_pool(num_threads, task_class_or_fun, args)
+        task_name = task_name or task_class_or_fun.__name__
+        pool = MapTaskPool.get_pool(  # yapf: disable
+            num_threads, task_class_or_fun, args, task_name)
         results = pool.process(samples)
         pool.finish()
         return results
@@ -228,7 +243,7 @@ class ReduceTaskProcess(multiprocessing.Process):
 class ReduceTaskPoolSingleThread:
     """单进程TaskPool. 用于reduce操作."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "accumulate")
         assert hasattr(task_class, "get_result")
         assert isinstance(task_args, list)
@@ -238,10 +253,12 @@ class ReduceTaskPoolSingleThread:
             self.instance = task_class(*task_args)
         else:
             self.instance = task_class(task_args)
+        self.task_name = task_name or task_class.__name__
 
     def accumulate(self, samples):
         tracker = lib.util.get_progress_tracker(total=len(samples))
-        tracker.set_description("Progress (single thread)")
+        head = "Task ${self.task_name} (single thread)"
+        tracker.set_description(head)
         for sample in samples:
             if isinstance(sample, tuple):
                 self.instance.accumulate(*sample)
@@ -258,7 +275,7 @@ class ReduceTaskPoolSingleThread:
 class ReduceTaskPoolMultiThread:
     """多进程TaskPool. 用于reduce操作."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "accumulate")
         assert hasattr(task_class, "get_result")
         assert isinstance(task_args, list)
@@ -276,14 +293,17 @@ class ReduceTaskPoolMultiThread:
             )
             self.processes.append(process)
             process.start()
+        self.task_name = task_name or task_class().__name__
 
     def accumulate(self, samples):
         assert self.input_queue.empty()
         for sample in samples:
             self.input_queue.put(sample)
 
+        num_threads = len(self.processes)
         tracker = lib.util.get_progress_tracker(total=len(samples))
-        tracker.set_description("Progress (single thread)")
+        head = f"Task {self.task_name} (thread {num_threads})"
+        tracker.set_description(head)
         while not self.input_queue.empty():
             processed = len(samples) - self.input_queue.qsize()
             tracker.update(processed - tracker.n)
@@ -308,14 +328,16 @@ class ReduceTaskPoolMultiThread:
 class ReduceTaskPool:
     """用于reduce操作的TaskPool入口."""
 
-    def __init__(self, task_class, task_args):
+    def __init__(self, task_class, task_args, task_name=None):
         assert hasattr(task_class, "accumulate")
         assert hasattr(task_class, "get_result")
         assert isinstance(task_args, list)
         if len(task_args) == 1:
-            self.task_pool = ReduceTaskPoolSingleThread(task_class, task_args)
+            self.task_pool = ReduceTaskPoolSingleThread(
+                task_class, task_args, task_name)  # yapf: diable
         elif len(task_args) > 1:
-            self.task_pool = ReduceTaskPoolMultiThread(task_class, task_args)
+            self.task_pool = ReduceTaskPoolMultiThread(
+                task_class, task_args, task_name)  # yapf disable
 
     def accumulate(self, samples):
         self.task_pool.accumulate(samples)
@@ -324,10 +346,12 @@ class ReduceTaskPool:
         return self.task_pool.get_result()
 
     @staticmethod
-    def reduce(num_threads, task_class, samples, task_args=tuple()):
+    def reduce(num_threads, task_class, samples, task_args=tuple(),
+               task_name=None):  # yapf: disable
         # 和map版本不同的是, reduce版本只支持class方式.
         task_args = [task_args] * num_threads
-        pool = ReduceTaskPool(task_class, task_args)
+        task_name = task_name or task_class.__name__
+        pool = ReduceTaskPool(task_class, task_args, task_name)
         pool.accumulate(samples)
         return pool.get_result()
 

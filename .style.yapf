@@ -4,6 +4,5 @@ join_multiple_lines = true
 coalesce_brackets = true
 blank_line_before_module_docstring = true
 spaces_around_power_operator = true
-spaces_around_subscript_colon = true
 split_all_top_level_comma_separated_values = true
 split_before_expression_after_opening_paren = true

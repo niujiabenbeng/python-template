@@ -6,6 +6,8 @@ disable=
     C0116, # missing-function-docstring
     C0321, # multiple-statements
     C0326, # bad-whitespace
+    R0401, # cyclic-import
+    R0801, # duplicate-code
     R0902, # too-many-instance-attributes
     R0903, # too-few-public-methods
     R0912, # too-many-branches
@@ -14,6 +16,10 @@ disable=
     R1710, # inconsistent-return-statements
     W0221, # arguments-differ
     W0612, # unused-variable
+    W0703, # broad-except
+    E1102, # not-callable
+
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(os.path.dirname(find_pylintrc()))"
 
 extension-pkg-whitelist=numpy,cv2,torch,GoodsReq
 

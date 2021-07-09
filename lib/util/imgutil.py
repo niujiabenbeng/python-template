@@ -9,6 +9,8 @@ import PIL.Image
 import PIL.ImageFont
 import PIL.ImageDraw
 
+__all__ = ("draw_textlines", "stitch_images", "get_label_color_map")
+
 
 def draw_textlines(image, origin, lines, color, size=26, thickness=2):
     """在图片上写文字, 支持中文."""

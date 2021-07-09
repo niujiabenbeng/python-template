@@ -2,9 +2,19 @@
 
 python的环境配置较为简单. 这里仅仅包含一些常用的工具.
 
-注意: 用pyls时, 需要切换到装有pyls的python环境, 否则会报找不到所需要的工具.
-
 TODO: 重新组织工程布局, 将lib和tools合并, 最终消除init.
+
+
+### 环境配置
+
+python配置用python-lsp, 目前用的python language server为python-lsp-server.
+安装命令: `pip install 'python-lsp-server[all]'`
+
+配置文件:
+
+1. jedi不需要配置文件
+2. pylint需要配置文件: .pylintrc
+3. yapf需要配置文件: .style.yapf
 
 
 ### 检查代码的风格
