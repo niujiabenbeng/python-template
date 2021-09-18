@@ -40,7 +40,7 @@ def prepare_dir(path):
 
     dirname = os.path.dirname(path)
     # 当前目录直接返回
-    if not dirname: return None
+    if not dirname: return
 
     with global_lock:
         os.makedirs(dirname, exist_ok=True)

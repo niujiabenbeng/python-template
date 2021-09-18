@@ -5,7 +5,6 @@ disable=
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
     C0321, # multiple-statements
-    C0326, # bad-whitespace
     R0401, # cyclic-import
     R0801, # duplicate-code
     R0902, # too-many-instance-attributes
@@ -13,9 +12,7 @@ disable=
     R0912, # too-many-branches
     R0913, # too-many-arguments
     R0914, # too-many-locals
-    R1710, # inconsistent-return-statements
     W0221, # arguments-differ
-    W0612, # unused-variable
     W0703, # broad-except
     E1102, # not-callable
 
@@ -30,7 +27,6 @@ max-line-length=80
 
 [MISCELLANEOUS]
 notes=
-
 
 [TYPECHECK]
 ignored-modules=numpy,cv2,torch,GoodsReq
