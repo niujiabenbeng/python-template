@@ -17,6 +17,23 @@ python配置用python-lsp, 目前用的python language server为python-lsp-serve
 3. yapf需要配置文件: .style.yapf
 
 
+### pylintrc
+
+pylint的配置文件为:pylintrc. 如果python文件不在module中, 则pylint不会在其父目录
+寻找pylintrc, 这里我们通过修改pylint的源码来确保pylint能找到对应的配置文件.
+源码位于: `/pylint/config/find_default_config_files.py`
+在`find_default_config_files`函数中, 去掉对`__init__.py`的限制即可.
+
+具体实现参考:
+
+``` python
+if True:
+    curdir = os.path.abspath(os.getcwd())
+    while not os.path.samefile(curdir, "/"):
+        curdir = os.path.abspath(os.path.join(curdir, ".."))
+```
+
+
 ### 检查代码的风格
 
 ``` shell
@@ -40,3 +57,18 @@ Linux系统中, 可以用`fc-list :lang=zh-cn`命令查看当前机器的所有�
 Windows文件路径: `C:\Windows\Fonts\simsun.ttc`
 
 Linux文件路径: `/usr/share/fonts/simsun.ttc`
+
+
+### conda环境新建和库的安装
+
+注意: pytorch和detectron2只能用pip安装, conda远程仓库的版本太老了.
+
+``` shell
+conda create --name pytorch
+
+conda install pip protobuf flask oss2
+
+pip install 'python-lsp-server[all]'
+
+pip install opencv-python opencv-contrib-python
+```
